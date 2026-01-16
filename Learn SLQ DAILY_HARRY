@@ -1,0 +1,79 @@
+Xây dựng hệ thống quản lý Kho (Inventory Management)
+Chúng ta sẽ áp dụng giáo trình vào bài toán Kho hàng mà bạn đã bắt đầu làm quen ở các tin nhắn trước.
+
+/Tạo Database sạch/
+USE master;
+GO
+IF EXIST (SELECT * FROM sys.databases WHERE name = 'InventoryDB')
+DROP DATABASE InventoryDB;
+
+GO
+CREATE DATABASE InventoryDB;
+GO
+USE InventoryDB;
+GO
+
+/Định nghĩa Thực thể "Gốc"/
+CREATE TABLE Products (
+ProductID nvarchar(10) NOT NULL,
+ProductName nvarchar(50) NOT NULL,
+Unit nvarchar(20),
+CONSTRAINT PK_Products PRIMARY KEY (ProductID)
+
+CREATE TABLE Imports (
+ImportID int IDENTITY(1;1),
+ProductID navarchar(10) NOT NULL,
+Quantity int NOT NULL,
+ImportDate datetime DEFAULT GETDATE(),
+CONSTRAINT PK_Imports PRIMARY KEY (ImportID)
+CONSTRAINT FK_Imports_Products FOREIGN KEY (ProductID) REFERENCES Products(ProductsID)
+);
+
+
+CREATE TABLE Suppliers (
+SupplierID nvarchar(10) NOT NULL,
+SupplierName nvarchar(30) NOT NULL, 
+Address nvarchar(30) NOT NULL,
+CONSTRAINT PK_Supplier PRIMARY KEY (SupplierID)
+
+
+CREATE TABLE Imports (
+ImportID int IDENTITY(1,1)
+ProductID nvarchar(10) NOT NULL, 
+SupplierID nvarchar(10) NOT NULL,
+Quantity int NOT NULL, 
+ImportDate datetime DEFAULT GETDATE(),
+CONSTRAINT PK_Imports PRIMARY KEY (ImportID)
+CONSTRAINT FK_Imports_Products FOREIGN KEY (ProductID) REFERENCES Products(ProductID),
+CONSTRAINT FK_Supplier_Import FOREIGN KEY (SupplierID) REFERENCES Suppliers(SupplierID)
+
+ALTER TABLE Suppliers - thay đổi bảng Suppliers
+ADD Email nvarchar(50);
+
+
+REVIEW
+/Khi viết REFERENCES TableName(ColumnName), cái ColumnName đó bắt buộc phải là Khóa chính (Primary Key) của bảng cha\
+/Nếu SupplierID ở bảng Cha là nvarchar(10), thì ở bảng Con nó cũng bắt buộc phải là nvarchar(10)/
+/ImportDate datetime DEFAULT GETDATE(), tự lấy ngày giờ hiện tại/
+/int/ số nguyên/
+/IDENTITY(1,1) - Khoá tự tăng/
+
+*DAY 2*
+/Nhập dữ liệu (INSERT) và Truy vấn (SELECT) cơ bản/
+/
+INSERT INTO TableName (CoL1,CoL2...) thứ tự cột
+VALUES (Val1, Val2...) Các giá trị khớp thứ tự với cột
+
+
+*Day 3*
+Truy vấn danh sách tất cả các lần nhập hàng, hiển thị: Ngày nhập, Tên Nhà cung cấp, và Số lượng.
+Lọc báo cáo trên, chỉ lấy những lần nhập hàng từ nhà cung cấp có tên chứa chữ 'Thép'.
+Sắp xếp kết quả theo Số lượng giảm dần (DESC).
+
+/ tìm chữ hay số ở bất kì đâu LIKE '%X%'
+
+SELECT I.ImportDate, S.SupplierName, I.Quantity
+FROM Imports I
+JOIN Suppliers S ON S.SupplierID = I.SupplierID
+WHERE S.SupplierName LIKE N'%Thép%'
+ORDER BY I.Quantity DESC; 
