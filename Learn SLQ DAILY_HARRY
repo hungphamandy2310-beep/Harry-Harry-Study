@@ -77,3 +77,113 @@ FROM Imports I
 JOIN Suppliers S ON S.SupplierID = I.SupplierID
 WHERE S.SupplierName LIKE N'%Thép%'
 ORDER BY I.Quantity DESC; 
+
+
+Giả sử bạn mới thêm một sản phẩm mới là Cement (Xi măng) vào bảng Products nhưng chưa làm lệnh nhập hàng (Imports) cho nó.
+Yêu cầu: Hãy viết một câu lệnh sử dụng LEFT JOIN để hiển thị: ProductName và Quantity.
+
+INSERT INTO Products (ProductID, ProductName, Unit)
+VALUES ('CEMENT01', N'Xi mang Holcim', N'Bao')
+SELECT P.ProductName, I.Quantity, I.ImportDate
+FROM Products AS P
+LEFT JOIN Imports AS I on P.ProductID = I.ProductID;
+
+Thống kê xem mỗi Nhà cung cấp đã cung cấp cho chúng ta bao nhiêu lần (số lần nhập hàng) và tổng số lượng là bao nhiêu?
+SELECT S.SupplierName, COUNT(I.ImportID) AS CountOfOrders,, SUM(I.Quantity) AS TotalAmount 
+FROM Suppliers
+JOIN Imports I ON S.SupplierID = I.SupplierID
+GROUP BY S.SupplierName
+ORDER BY COUNT(I.ImportID) DESC;
+
+Tìm thông tin của sản phẩm (ProductName) có số lượng tồn kho ít nhất trong bảng Products.
+SELECT P.ProductName, Stock
+FROM Products
+WHERE Stock = (SELECT MIN(Stock) FROM Products);
+
+Dấu ngoặc đơn (...) sẽ chay trước để trả về kết quả 
+Sau đó câu lệnh sẽ đi WHERE
+
+NO ACTION / RESTRICT: Không cho xoá cha nếu vẫn còn con (BEST SAFE)
+CASCADEL: Xoá cả cha cả con
+SET NULL: Xoá cha thì cột con thành trống
+
+CONSTRAINT FK_Supplier_Import FOREIGN KEY (SupplierID) REFERENCES Suppliers(SupplierID)
+
+
+
+Data Modification
+UPDATE AND DELETE
+
+UPDATE (dung de sua doi cac gia tri dang ton tai, luon dung WHERE, quen WHERE, thay doi tat ca cac hang trong bang)
+
+Vidu: Nha cung cap 'SUP01' thong bao doi Email moi
+UPDATE Suppliers
+SET Email = 'new-contact@steel-aust.com.au'
+WHERE SupplierID = 'SUP01'
+
+DELETE (Dung de sua doi cac gia tri dang ton tai, always having where, If we forget WHERE, we will change total values in the table
+TRUNCATE (xoa sach bang rat nhanh)
+Vidu: Xoa nha cung cap co ma SUP99 vi chung ta khong con hop tac nua
+DELETE FROM Suplliers
+WHERE SupplierID = 'SUP99'
+
+
+Integrity Constraints and Advanced Logic (Rang buoc nang cao)
+Vidu: So luong nhap kho khong bao duoc phep la so am
+ALTER TABLE Imports
+ADD CONSTRAINT CHK_Quantity_Positive
+CHECK (Quantity>0)
+
+Unique Constraint
+ALTER TABLE Suppliers
+ADD CONSTRAINT UQ_Supplier_Email UNIQUE (Email);
+
+
+Vidu1: Hay viet lenh them mot rang buoc CHECK cho bang Products sao cho cot Stock khong bao gio duoc nho hon 0
+ALTER TABLE Products
+ADD CONSTRAINT CHK_Stock_Positive
+CHECK (Stock>0
+
+Vidu2: Co mot dot tang gia dong loat, hay viet lenh cap nhat bang Products, tang gia (Price) them 10% cho tat ca san pham thuoc don vi tnh la 'Tan'
+UPDATE Products
+SET PRICE = PRICE * 1.1
+WHERE Unit = N'Tan';
+
+
+
+
+VIEWS - The Virtual Tables (Bang Ao)
+- Thay vi moi lan muon xem bao cao, phai dung lenh JOIN, nen luu no vao mot cai View
+- Ban co the cho nhan vien Xem VIEW, thay vi cho ho xem bang Suppliers goc
+
+CREATE VIEW View_Inventory_Summary AS
+SELECT P.ProductName, S.SupplierName, I.Quantity, I.ImportDate
+FROM Products P
+JOIN Imports I ON P.ProductID = I.ProductID
+JOIN SUppliers S ON I.SupplierID = S.SupplierID;
+
+
+
+Database Security & Permissions (Quyen truy cap)
+GRANT Cap Quyen (Vi du: Chi cho phep BA doc du lieu, khong cho Xoa)
+REVOKE Thu hoi quyen
+
+GRANT SELECT ON VIEW_Inventory_Summary TO (Intern_User)
+
+Vidu: Lay ra danh sach tat ca san pham bao gom ca nhung san pham chua tung co lich su nhap hang
+
+SELECT * 
+FROM Products P 
+LEFT JOIN Imports I ON P.ProductID = I.ProductID
+LEFT JOIN giữ lại toàn bộ dữ liệu ở bảng bên trái (Products), điền NULL vào các cột của bảng bên phải nếu không tìm thấy dữ liêuj khớp
+
+Vidu: Tong so tien da chi cho moi san pham
+SELECT ProductID, SUM(Quantity*UnitPrice)
+FROM Imports I
+GROUP BY ProductID
+
+
+Vidu Can loc danh sach cac san pham co gia cao hon muc trung binh cua tat ca san pham trong kho
+SELECT P.ProductID, P.ProductName
+FROM Products
+WHERE Price > (E
