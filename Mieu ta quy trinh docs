@@ -1,1 +1,27 @@
+Quy trình đăng kí bán hàng (offline)
+1. Người đăng kí sẽ bắt đầu gửi đơn đăng kí cho bên Hành Chính Nhân Sự (HCNS) (tiếp nhận tay lên dùng hình thang)
+2. Sau đó HCNS sẽ tiếp nhận đơn đăng ký 
+3. Kiểm tra điều kiện đầu vào
++ Nếu không đáp ứng điều kiện (ví dụ: độ tuổi dưới 18 tuổi, chưa có giấy phép kinh doanh...) -> HCNS sẽ trả về cho 
+khách hàng chỉnh sửa
++ Nếu đáp ứng điều kiện (chuyển tiếp hồ sơ) -> Kiểm tra thông tin thêm (như số căn cước, gmail có tồn tại hay ko...)
+4. Kiểm tra và bổ sung thông tin (nhắc lại cho người đăng kí bổ sung thông tin)
+5. Sau khi hoàn thành hồ sơ, thì hồ sơ người đăng kí sẽ được nhập thông tin trên hệ thống
+6. Xác nhận đăng kí tạo tài khoản thành công (gửi về gmail đăng ký của người dùng)
+7. Người đăng ký cần nhấn link Active tài khoản hồ sơ khách hàng trong gmail
+8. End
 
+
+
+
+
+Quy trình đăng ký bán hàng online
+1. Người đăng ký tạo tài khoản trên website
+2. Người đăng ký khai báo thông tin trên form của website
+3. Hệ thống tiếp nhận thông tin hồ sơ người đăng ký
+4. Hệ thống kiểm tra điều kiện của hồ sơ người đăng kí
++ Nếu không đáp ứng điều kiện (ví dụ: độ tuổi dưới 18 tuổi, chưa có giấy phép kinh doanh...) -> Hệ thống sẽ thông báo hồ sơ ko hợp lệ
+quay lại phần khai báo thông tin để người đăng ký thấy phần lỗi nào chưa đáp ứng và chỉnh sửa
++ Nếu đáp ứng điều kiện (chuyển tiếp hồ sơ) -> Kiểm tra thông tin thêm (như số căn cước, gmail có tồn tại hay ko...)
+5. Sau khi được xác nhận hợp lệ toàn bộ thông tin, hệ thống sẽ hiển thị thông báo xác nhận lập hồ sơ trong gmail khách hàng
+6. Hệ thống sẽ hiển thị thông báo thiết lập hồ sơ đăng kí thành công - END
